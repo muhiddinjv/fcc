@@ -1,0 +1,26 @@
+{
+  "name": "fcc-learn-npm-package-json",
+  "author": "Muhiddin JV",
+  "description": "a document of everything I have learned thru FCC",
+  "keywords": [
+    "freecodecamp",
+    "package.json",
+    "express.js",
+    "fastify.js",
+    "node.js",
+    "mongodb"
+  ],
+  "license": "MIT",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://idontknow/todo.git"
+  }
+}
