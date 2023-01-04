@@ -1,7 +1,5 @@
 let express = require("express");
 let app = express();
-
-bodyParser.urlencoded({extended: false})
 require('dotenv').config();
 
 // Serve an HTML file
