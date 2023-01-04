@@ -1,26 +1,17 @@
 let express = require("express");
+let bodyParser = require("body-parser");
 let app = express();
+
+bodyParser.urlencoded({extended: false})
 require('dotenv').config();
 
+// Serve an HTML file
 app.use("/public", express.static(__dirname + "/public"));
-
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-function middleWare(req, res, next) {
-  console.log(`${req.method} ${req.path} - ${req.ip}`);
-  next();
-}
-app.use(middleWare);
-
-app.get('/now', function(req, res, next) {
-  req.time = new Date().toString();
-  next();
-}, function(req, res) {
-  res.send({time: req.time});
-});
-
+// 6 Use the .env file
 app.get('/json',(req, res) => {
   let text = "Hello json!";
 
@@ -29,6 +20,31 @@ app.get('/json',(req, res) => {
   }
 
   res.json({message: text});
+})
+
+// 7 Implement a Root-Level Request Logger Middleware
+function middleWare(req, res, next) {
+  console.log(`${req.method} ${req.path} - ${req.ip}`);
+  next();
+}
+app.use(middleWare);
+
+// 8 Chain Middleware to Create a Time Server
+app.get('/now', function(req, res, next) {
+  req.time = new Date().toString();
+  next();
+}, function(req, res) {
+  res.send({time: req.time});
+});
+
+// 9 Get Route Parameter Input from the Client
+app.get('/:word/echo',(req, res)=>{
+  res.json({echo: req.params.word});
+})
+
+// 10 Get Query Parameter Input from the Client
+app.get('/name', (req, res)=>{
+  res.json({name: `${req.query.first} ${req.query.last}`});
 })
 
 module.exports = app;
