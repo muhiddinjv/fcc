@@ -1,5 +1,4 @@
 let express = require("express");
-let bodyParser = require("body-parser");
 let app = express();
 
 bodyParser.urlencoded({extended: false})
@@ -45,6 +44,15 @@ app.get('/:word/echo',(req, res)=>{
 // 10 Get Query Parameter Input from the Client
 app.get('/name', (req, res)=>{
   res.json({name: `${req.query.first} ${req.query.last}`});
+})
+
+// 11 Use body-parser to Parse POST Requests
+let bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended: false}))
+
+// 12 Get Data from POST Requests
+app.post('/name', (req, res)=>{
+  res.json({name: `${req.body.first} ${req.body.last}`});
 })
 
 module.exports = app;
