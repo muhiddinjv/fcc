@@ -3,6 +3,8 @@ require('dotenv').config();
 
 let Person;
 
+console.log('hi');
+
 const createAndSavePerson = (done) => {
   done(null /*, data*/);
 };
