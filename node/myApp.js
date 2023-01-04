@@ -40,7 +40,11 @@ app.get('/:word/echo',(req, res)=>{
 })
 
 // 10 Get Query Parameter Input from the Client
+<<<<<<< HEAD
 app.get('/name2', (req, res)=>{
+=======
+app.get('/name', (req, res)=>{
+>>>>>>> 018775609f11f56b3ef17bfa8a00524b3be67315
   res.json({name: `${req.query.first} ${req.query.last}`});
 })
 
