@@ -10,13 +10,15 @@ app.get("/", (req, res) => {
 
 // 6 Use the .env file
 app.get('/json',(req, res) => {
-  let text = "Hello json!";
+  var response = "Hello json!";
 
   if(process.env.MESSAGE_STYLE === 'uppercase'){
-    text = text.toUpperCase();
+    response = response.toUpperCase();
+  } else {
+    response = "Hello json!"
   }
 
-  res.json({message: text});
+  res.json({message: response});
 })
 
 // 7 Implement a Root-Level Request Logger Middleware
