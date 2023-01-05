@@ -26,12 +26,32 @@ const createAndSavePerson = (done) => {
   });
 };
 
+
+// 2 Create Many Records with model.create()
+var arrayOfPeople = [{
+  name: 'Mike Tyson',
+  age: 34,
+  favoriteFoods:['somsa','manti','holvaytar']
+},{
+  name: 'Bob Tyler',
+  age: 24,
+  favoriteFoods:['perashka','gumma','qurt']
+}]
+
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, function (err, people) {
+    if (err) return console.error(err);
+    done(null, people)
+  });
 };
 
+
+// 3 Use model.find() to Search Your Database
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({name: personName}, function (err, people) {
+    if (err) return console.error(err);
+    done(null, people)
+  });
 };
 
 const findOneByFood = (food, done) => {
