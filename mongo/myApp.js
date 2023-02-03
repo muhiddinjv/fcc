@@ -4,83 +4,90 @@ const Schema = mongoose.Schema;
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const personSchema = new Schema({
+/** 2) Create a 'Person' Model */
+var personSchema = new mongoose.Schema({
   name: String,
   age: Number,
   favoriteFoods: [String]
 });
 
-// 1 Create and Save a Record of a Model
-const Person = mongoose.model("Person", personSchema);
+/** 3) Create and Save a Person **/
+var Person = mongoose.model('Person', personSchema);
 
-const createAndSavePerson = (done) => {
-  let person = new Person({
-    name: 'Mike Tyson',
-    age: 34,
-    favoriteFoods:['somsa','manti','holvaytar']
-  })
-  
-  person.save(function(err, data) {
+var createAndSavePerson = function(done) {
+  var janeFonda = new Person({
+    name: "Jane Fonda", age: 84,     
+    favoriteFoods: ["eggs", "fish", "fresh fruit"]
+  });
+  janeFonda.save(function(err, data) {
     if (err) return console.error(err);
     done(null, data)
   });
 };
 
+/** 4) Create many People with `Model.create()` */
+var arrayOfPeople = [
+  {name: "Frankie", age: 74, favoriteFoods: ["Del Taco"]},
+  {name: "Sol", age: 76, favoriteFoods: ["roast chicken"]},
+  {name: "Robert", age: 78, favoriteFoods: ["wine"]}
+];
 
-// 2 Create Many Records with model.create()
-var arrayOfPeople = [{
-  name: 'Mike Tyson',
-  age: 34,
-  favoriteFoods:['somsa','manti','holvaytar']
-},{
-  name: 'Bob Tyler',
-  age: 24,
-  favoriteFoods:['perashka','gumma','qurt']
-}]
-
-const createManyPeople = (arrayOfPeople, done) => {
+var createManyPeople = function(arrayOfPeople, done) {
   Person.create(arrayOfPeople, function (err, people) {
-    if (err) return console.error(err);
-    done(null, people)
+    if (err) return console.log(err);
+    done(null, people);
   });
 };
 
-
-// 3 Use model.find() to Search Your Database
-const findPeopleByName = (personName, done) => {
-  Person.find({name: personName}, function (err, people) {
-    if (err) return console.error(err);
-    done(null, people)
+/** 5) Use `Model.find()` */
+var findPeopleByName = function(personName, done) {
+  Person.find({name: personName}, function (err, personFound) {
+    if (err) return console.log(err);
+    done(null, personFound);
   });
 };
 
-
-// 4 Use model.findOne() to find only one person
-const findOneByFood = (food, done) => {
-  Person.findOne({favoriteFoods: food}, function (err, people) {
-    if (err) return console.error(err);
-    done(null, people)
+/** 6) Use `Model.findOne()` */
+var findOneByFood = function(food, done) {
+  Person.findOne({favoriteFoods: food}, function (err, data) {
+    if (err) return console.log(err);
+    done(null, data);
   });
 };
 
-const findPersonById = (personId, done) => {
-  Person.findOne(personId, function (err, people) {
-    if (err) return console.error(err);
-    done(null, people)
+/* 7) Use `Model.findById()` */
+var findPersonById = function(personId, done) {
+  Person.findById(personId, function (err, data) {
+    if (err) return console.log(err);
+    done(null, data);
   });
-  done(null /*, data*/);
 };
 
+/* 8) Use `Model.findById()` */
 const findEditThenSave = (personId, done) => {
-  const foodToAdd = "hamburger";
+  const foodToAdd = 'hamburger';
 
-  done(null /*, data*/);
+  // .findById() method to find a person by _id with the parameter personId as search key. 
+  Person.findById(personId, (err, person) => {
+    if(err) return console.log(err); 
+  
+    // Array.push() method to add "hamburger" to the list of the person's favoriteFoods
+    person.favoriteFoods.push(foodToAdd);
+
+    // and inside the find callback - save() the updated Person.
+    person.save((err, updatedPerson) => {
+      if(err) return console.log(err);
+      done(null, updatedPerson)
+    })
+  })
 };
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOneAndUpdate({name: personName}, {age: ageToSet}, {new: true}, (err, updatedDoc) => {
+    if(err) return console.log(err);
+    done(null, updatedDoc);
+  })
 };
 
 const removeById = (personId, done) => {
@@ -95,8 +102,13 @@ const removeManyPeople = (done) => {
 
 const queryChain = (done) => {
   const foodToSearch = "burrito";
-
-  done(null /*, data*/);
+  Person.find({ favoriteFoods: foodToSearch })
+    .sort({ name: "asc" })
+    .limit(2)
+    .select({ age: 0 })
+    .exec((err, people) => {
+      done(err, people)
+    });
 };
 
 /** **Well Done !!**
