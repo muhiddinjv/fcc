@@ -1,6 +1,7 @@
 //your node app starts here
 // init project
 var express = require('express');
+require('dotenv').config();
 var app = express();
 
 // so that your API is remotely testable by FCC 
@@ -12,7 +13,7 @@ app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + '/index.html');
 });
 
 /*
@@ -23,22 +24,42 @@ app.get("/", function (req, res) {
   }
 */
 
-// your first API endpoint... 
-app.get("/api/:date", function (req, res) {
-  const timestamp = req.params.date;
+function isValidDate(dateString) {
+  var dateObj = new Date(dateString);
+  if (isNaN(dateObj.getTime())) {
+    return false;
+  }
+  return true;
+}
+
+
+
+// your first API endpoint.... 
+app.get("/api/:date?", function (req, res) {
+  const timestamp = req.params.date;  
+  let isTimeStamp = Number(timestamp) ? new Date(Number(timestamp)).getTime() > 0 : false;
+
+  if (!req.params.date) {
+    res.json({unix: new Date().getTime(), utc: new Date().toUTCString()});
+  } 
+
+  const d = new Date(timestamp);
   
-  if (isNaN(timestamp)) {
-    const d = new Date(timestamp);
-
-    res.json({unix: d.getTime(), utc: d.toUTCString()});
+  if(d == "Invalid Date" && !isTimeStamp){
+    res.json({error: 'Invalid Date'});
   } else {
-    const utc = new Date(timestamp * 1).toUTCString();
-
-    res.json({unix: parseInt(timestamp), utc});
+    if (isNaN(timestamp)) {
+      res.json({unix: d.getTime(), utc: d.toUTCString()});
+    } else {
+      const utc = new Date(timestamp * 1).toUTCString();
+  
+      res.json({unix: parseInt(timestamp), utc});
+    }
   }
 });
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT || 1000, function () {
+const port = process.env.PORT || 1000;
+var listener = app.listen(port, function () {
   console.log('Your app is listening on http://localhost:' + listener.address().port);
 });
